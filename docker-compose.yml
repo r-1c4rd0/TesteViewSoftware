@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Serviço MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend_network
+
+  # Serviço RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend_network
+      
+  # Microserviço Node.js
+  nodejs-microservice:  # Corrigido: adicionado espaço
+    build: ./nodejs-microservice  # Caminho para o Dockerfile do microserviço Node.js
+    container_name: nodejs_microservice
+    ports:
+      - "3000:3000"  # Porta do WebSocket Node.js
+    depends_on:
+      - rabbitmq
+      - mongodb
+    networks:
+      - backend_network    
+
+# Volume para armazenar dados do MongoDB
+volumes:
+  mongo_data:
+
+# Rede para os serviços
+networks:
+  backend_network:
+    driver: bridge

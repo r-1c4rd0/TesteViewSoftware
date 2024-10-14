@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-microservice",
+  "version": "1.0.0",
+  "description": "Microserviço Node.js para monitoramento de máquinas em tempo real",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.8.0",
+    "express": "^4.18.0",
+    "mongoose": "^6.0.12",
+    "ws": "^8.18.0"
+  }
+}

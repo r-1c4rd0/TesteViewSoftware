@@ -1,0 +1,11 @@
+# Ignorar a pasta node_modules
+node_modules/
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar o diretório de build
+dist/
+
+# Ignorar cache de dependências
+.cache/
