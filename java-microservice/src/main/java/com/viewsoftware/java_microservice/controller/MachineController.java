@@ -53,7 +53,5 @@ public class MachineController {
     public ResponseEntity<Void> deleteMachine(@PathVariable String id) {
         machineService.deleteMachine(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    
+    }    
 }

@@ -9,15 +9,19 @@ import com.viewsoftware.java_microservice.service.MachineService;
 @SpringBootApplication
 public class JavaMicroserviceApplication implements CommandLineRunner {
 
-    public JavaMicroserviceApplication(MachineService machineService) {
-    }
+	private final MachineService machineService;  
 
-    public static void main(String[] args) {
-        SpringApplication.run(JavaMicroserviceApplication.class, args);
-    }
+	public JavaMicroserviceApplication(MachineService machineService) {
+		this.machineService = machineService;
+	}
 
-    @Override
-    public void run(String... args) throws Exception {        
-    	 System.out.println("Microserviço Java iniciado com sucesso!");
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(JavaMicroserviceApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {        
+		System.out.println("Microserviço Java iniciado com sucesso!");       
+
+	}
 }

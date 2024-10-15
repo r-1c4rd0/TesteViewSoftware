@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/monitoramento', {
 
 // Modelo de Máquina
 const maquinaSchema = new mongoose.Schema({
+  maquinaId: { type: String, required: true },
   nome: String,
   status: String,
   periodos: [{
@@ -71,7 +72,7 @@ const conectarRabbitMQ = async () => {
         // Atualizar status da máquina e enviar via WebSocket
         const maquina = await Maquina.findOne({ maquinaId: mensagem.maquinaId });
         if (maquina) {
-          maquina.status = determinarStatus(maquina);
+          maquina.status = mensagem.status;
           await maquina.save();
 
           wss.clients.forEach(client => {
