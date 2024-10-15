@@ -2,19 +2,23 @@ const express = require('express');
 const mongoose = require('mongoose');
 const WebSocket = require('ws');
 const amqp = require('amqplib');
-const machineRoutes = require('./routes/machineRoutes'); // Se quiser manter as rotas HTTP
+const machineRoutes = require('./routes/machineRoutes'); // Importa as rotas de máquinas
 
 const app = express();
 const PORT = 3000;
 
-app.use(express.json()); // Para permitir o envio de JSON no corpo das requisições
+app.use(express.json()); // Permite o envio de JSON no corpo das requisições
+
+// Adicione esta linha para resolver a depreciação
+mongoose.set('strictQuery', false);
 
 // Conectar ao MongoDB
-mongoose.connect('mongodb://localhost:27017/monitoramento', {
+mongoose.connect('mongodb://localhost:27017/test', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log('Conectado ao MongoDB'))
-  .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+})
+.then(() => console.log('Conectado ao MongoDB'))
+.catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
 // Modelo de Máquina
 const maquinaSchema = new mongoose.Schema({
@@ -45,13 +49,18 @@ const determinarStatus = (maquina) => {
 
 // WebSocket: enviar status inicial para todos os clientes conectados
 wss.on('connection', async (ws) => {
-  const maquinas = await Maquina.find();
-  const statusMaquinas = maquinas.map(maquina => ({
-    id: maquina._id,
-    nome: maquina.nome,
-    status: determinarStatus(maquina)
-  }));
-  ws.send(JSON.stringify(statusMaquinas));
+  try {
+    const maquinas = await Maquina.find();  // Busca todas as máquinas no MongoDB
+    const statusMaquinas = maquinas.map(maquina => ({
+      id: maquina._id,
+      nome: maquina.nome,
+      status: determinarStatus(maquina)
+    }));
+    ws.send(JSON.stringify(statusMaquinas));
+  } catch (err) {
+    console.error("Erro ao buscar máquinas:", err);
+    ws.send(JSON.stringify({ message: "Erro ao buscar máquinas" }));
+  }
 });
 
 // Conectar ao RabbitMQ
@@ -60,7 +69,6 @@ const conectarRabbitMQ = async () => {
     const conn = await amqp.connect('amqp://localhost'); // Troque 'localhost' por 'rabbitmq' se estiver no Docker
     const channel = await conn.createChannel();
     await channel.assertQueue('atualizacoes');
-
     console.log('Conectado ao RabbitMQ');
 
     // Consumir mensagens de atualização do serviço Java
@@ -69,11 +77,12 @@ const conectarRabbitMQ = async () => {
         const mensagem = JSON.parse(msg.content.toString());
         console.log('Recebida atualização:', mensagem);
 
-        // Atualizar status da máquina e enviar via WebSocket
+        // Verificar se a máquina existe no banco de dados
         const maquina = await Maquina.findOne({ maquinaId: mensagem.maquinaId });
         if (maquina) {
           maquina.status = mensagem.status;
           await maquina.save();
+          console.log(`Máquina ${maquina.maquinaId} atualizada para o status: ${maquina.status}`);
 
           wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN) {
@@ -84,8 +93,7 @@ const conectarRabbitMQ = async () => {
               }));
             }
           });
-        }
-
+        } 
         channel.ack(msg);
       }
     });
@@ -93,7 +101,6 @@ const conectarRabbitMQ = async () => {
     console.error('Erro ao conectar ao RabbitMQ:', error);
   }
 };
-
 // Iniciar a conexão RabbitMQ e o servidor
 conectarRabbitMQ();
 server.listen(PORT, () => {

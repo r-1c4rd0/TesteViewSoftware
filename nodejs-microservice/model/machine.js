@@ -9,8 +9,9 @@ const MachineSchema = new mongoose.Schema({
     dataInicio: { type: Date, required: true },
     dataFim: { type: Date, required: true }
   }]
-});
+}, { collection: 'maquinas' });
 
 // Criando e exportando o modelo
 const Machine = mongoose.model('Machine', MachineSchema);
 module.exports = Machine;
+

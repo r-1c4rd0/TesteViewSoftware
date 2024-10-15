@@ -20,7 +20,7 @@ public class MachineService {
 
 	public Machine saveMachine(Machine machine) {
 		Machine savedMachine = machineRepository.save(machine);
-        machineStatusProducer.sendStatusUpdate(savedMachine); // Enviar para RabbitMQ
+        machineStatusProducer.sendStatusUpdate(savedMachine); 
         return savedMachine;
 	}
 
