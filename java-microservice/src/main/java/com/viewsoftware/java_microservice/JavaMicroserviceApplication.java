@@ -9,11 +9,7 @@ import com.viewsoftware.java_microservice.service.MachineService;
 @SpringBootApplication
 public class JavaMicroserviceApplication implements CommandLineRunner {
 
-    private final MachineService machineService;
-
-   
     public JavaMicroserviceApplication(MachineService machineService) {
-        this.machineService = machineService;
     }
 
     public static void main(String[] args) {
@@ -22,6 +18,6 @@ public class JavaMicroserviceApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {        
-        machineService.simulateStatusChange();
+    	 System.out.println("Microserviço Java iniciado com sucesso!");
     }
 }

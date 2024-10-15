@@ -4,17 +4,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "machines")
 public class Machine {
-    private String maquinaId;
-    private String status;
-    private List<Periodo> periodos;
-   
-    public Machine(String maquinaId, String status, List<Periodo> periodos) {
-        this.maquinaId = maquinaId;
-        this.status = status;
-        this.periodos = periodos != null ? periodos : new ArrayList<>();
-    }
+	@Id
+	private String maquinaId;
+	private String name;
+	private String status;
+	private List<Periodo> periodos;
+
+	public Machine(String maquinaId,  String name, String status, List<Periodo> periodos) {
+		this.maquinaId = maquinaId;
+		this.name= name;
+		this.status = status;
+		this.periodos = periodos != null ? periodos : new ArrayList<>();
+	}
 
     public String getMaquinaId() {
         return maquinaId;
@@ -23,6 +29,14 @@ public class Machine {
     public void setMaquinaId(String maquinaId) {
         this.maquinaId = maquinaId;
     }
+    
+    public String getName() {
+    	return name;
+    }
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
 
     public String getStatus() {
         return status;
@@ -30,6 +44,14 @@ public class Machine {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public List<Periodo> getPeriodos() {
+        return periodos;
+    }
+
+    public void setPeriodos(List<Periodo> periodos) {
+        this.periodos = periodos;
     }
     
     public static class Periodo {
