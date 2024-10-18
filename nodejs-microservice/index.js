@@ -66,6 +66,8 @@ wss.on('connection', async (ws) => {
 // Conectar ao RabbitMQ
 const conectarRabbitMQ = async () => {
   try {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
     const conn = await amqp.connect('amqp://rabbitmq'); 
     const channel = await conn.createChannel();
     await channel.assertQueue('atualizacoes');

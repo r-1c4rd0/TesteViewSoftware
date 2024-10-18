@@ -42,8 +42,10 @@ services:
       depends_on:
         - rabbitmq
         - mongodb
+      networks:
+      - backend_network
       environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo_db:27017/test
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/test
 # Volume para armazenar dados do MongoDB
 volumes:
   mongo_data:
