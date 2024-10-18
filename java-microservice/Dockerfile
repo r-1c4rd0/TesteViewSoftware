@@ -1,14 +1,13 @@
-# Usar a imagem do OpenJDK 17
-FROM openjdk:17-jdk-slim
-
-# Diretório de trabalho dentro do container
+# Usando uma imagem do JDK para compilar o projeto
+FROM maven:3.8.4-openjdk-17-slim AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copiar o arquivo JAR para o container
-COPY target/monitoramento-maquinas-1.0-SNAPSHOT.jar /app/monitoramento-maquinas.jar
-
-# Expor a porta 8080 para a aplicação Java
+# Usando uma imagem leve do JDK para rodar o jar
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Comando para rodar a aplicação
-ENTRYPOINT ["java", "-jar", "monitoramento-maquinas.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

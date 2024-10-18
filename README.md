@@ -37,7 +37,17 @@ git clone https://github.com/r-1c4rd0/TesteViewSoftware.git
 
 ### Passo 2: Subir os containers com Docker Compose
 
-Execute o seguinte comando para inicializar o MongoDB, RabbitMQ, e os microserviços:
+
+### Para o Java
+ ```
+  docker run -d -p 8080:8080 --name java-microservice java-microservice 
+ ```
+ ### Para o nodejs
+ ```
+  docker run -d -p 3000:3000 --name nodejs-microservice nodejs-microservice 
+ ```
+
+ Execute o seguinte comando para inicializar o MongoDB, RabbitMQ, e os microserviços:
 
 ```
 docker-compose up --build

@@ -13,7 +13,7 @@ app.use(express.json()); // Permite o envio de JSON no corpo das requisições
 mongoose.set('strictQuery', false);
 
 // Conectar ao MongoDB
-mongoose.connect('mongodb://localhost:27017/test', {
+mongoose.connect('mongodb://mongodb:27017/test', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -66,7 +66,7 @@ wss.on('connection', async (ws) => {
 // Conectar ao RabbitMQ
 const conectarRabbitMQ = async () => {
   try {
-    const conn = await amqp.connect('amqp://localhost'); // Troque 'localhost' por 'rabbitmq' se estiver no Docker
+    const conn = await amqp.connect('amqp://rabbitmq'); 
     const channel = await conn.createChannel();
     await channel.assertQueue('atualizacoes');
     console.log('Conectado ao RabbitMQ');

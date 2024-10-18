@@ -4,7 +4,7 @@ services:
   # Serviço MongoDB
   mongodb:
     image: mongo:latest
-    container_name: mongo_db
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -32,8 +32,18 @@ services:
       - rabbitmq
       - mongodb
     networks:
-      - backend_network    
-
+      - backend_network 
+  # Microserviço Java      
+  java-microservice:
+      build: ./java-microservice
+      container_name: java-microservice
+      ports:
+        - "8080:8080"
+      depends_on:
+        - rabbitmq
+        - mongodb
+      environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo_db:27017/test
 # Volume para armazenar dados do MongoDB
 volumes:
   mongo_data:
